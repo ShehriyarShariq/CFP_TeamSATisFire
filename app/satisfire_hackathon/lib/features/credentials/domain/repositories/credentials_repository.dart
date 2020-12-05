@@ -8,4 +8,5 @@ abstract class CredentialsRepository {
       CredentialsModel credentials);
   Future<Either<Failure, bool>> signUpWithCredentials(
       CredentialsModel credentials);
+  Future<Either<Failure, bool>> sendPasswordResetEmail(String email);
 }

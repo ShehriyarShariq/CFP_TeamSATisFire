@@ -71,4 +71,19 @@ class CredentialsRepositoryImpl extends CredentialsRepository {
       return Left(NetworkFailure());
     }
   }
+
+  @override
+  Future<Either<Failure, bool>> sendPasswordResetEmail(String email) async {
+    if (await networkInfo.isConnected) {
+      try {
+        await FirebaseInit.auth.sendPasswordResetEmail(email: email);
+
+        return Right(true);
+      } on FirebaseAuthException catch (e) {
+        return Right(false);
+      }
+    } else {
+      return Left(NetworkFailure());
+    }
+  }
 }
