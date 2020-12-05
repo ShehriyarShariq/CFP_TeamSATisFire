@@ -1,0 +1,134 @@
+{
+    "customer":{
+        "customer_id":{
+            "name":"Customer Name",
+            "email":"Customer Email",
+            "phoneNum":"Customer Phone Number",
+            "imageURL":"Customer Image"
+        }
+    },
+    "provider":{
+        "provider_id":{
+            "name":"Provider Name",
+            "email":"Provider Email",
+            "phoneNum":"Provider Phone Number",
+            "about":"About the Provider",
+            "imageURL":"Provider Image",
+            "cnic":{
+                "number":"CNIC Number",
+                "front":"CNIC Front Image",
+                "back":"CNIC Back Image"
+            },
+            "address":"Provider Physical Address",
+            "latitude":0,
+            "longitude":0
+        }
+    },
+    "categories":{
+        "category_id":{
+            "name":"Category Name",
+            "imageURL":"Category Image"
+        }
+    },
+    "services":{
+        "service_id":{
+            "provider_id":"Provider ID",
+            "title":"Service Title",
+            "description":"Service Description",
+            "type":"Online/Offline/Hybrid",
+            "images":[
+                "imageURL"
+            ],
+            "price":"Service Price",
+            "ranking":-1,
+            "category":{
+                "id":"Category ID",
+                "name":"Category Name"
+            }
+        }
+    },
+    "notifications":{
+        "uid":{
+            "notification_id":{
+                "title":"Notification Title",
+                "body":"Notification Message",
+                "timestamp":"Time of notification",
+                "type":"Type of notification"
+            }
+        }
+    },
+    "reservations":{
+        "reservation_id":{
+            "provider_id":"Provider ID",
+            "customer_id":"Customer ID"
+        }
+    },
+    "bookings":{
+        "booking_id":{
+            "provider_id":"Provider ID",
+            "customer_id":"Customer ID",
+            "service_id":"Service ID",
+            "time":"Start Time of Booking"
+        }
+    },
+    "chats":{
+        "rooms":{
+            "chat_id":{
+                "members":{
+                    "uid":"member"
+                },
+                "recentMessage":{
+                    "message":"Message Text",
+                    "sentBy":"Message Sender ID",
+                    "readBy":{
+                        "uid":true
+                    },
+                    "timestamp":"Time of Message"
+                }
+            }
+        },
+        "messages":{
+            "chat_id":{
+                "message_id":{
+                    "message":"Message Text",
+                    "sentBy":"Message Sender ID",
+                    "timestamp":"Time of Message"
+                }
+            }
+        }
+    },
+    "service_reviews":{
+        "service_id":{
+            "booking_id":{
+                "customer_id":"Customer ID",
+                "message":"Review Message",
+                "timestamp":"Time of review",
+                "rating":"Rating by Customer"
+            }
+        }
+    },
+    "service_ranking":{
+        "service_id":{
+            "five":0,
+            "four":0,
+            "three":0,
+            "two":0,
+            "one":0
+        }
+    },
+    "customer_reviews":{
+        "customer_id":{
+            "booking_id":{
+                "provider_id":"Provider ID",
+                "message":"Review Message",
+                "timestamp":"Time of review",
+                "rating":"Rating by Customer"
+            }
+        }
+    },
+    "bookingTimes" : {		
+	"time" : {
+	    "booking_id" : "reminder/start/end"
+	}		
+    }
+}
