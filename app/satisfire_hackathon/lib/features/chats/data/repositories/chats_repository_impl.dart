@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:satisfire_hackathon/core/error/failures.dart';
 import 'package:satisfire_hackathon/core/firebase/firebase.dart';
 import 'package:satisfire_hackathon/core/network/network_info.dart';
@@ -19,16 +20,35 @@ class ChatsRepositoryImpl extends ChatsRepository {
         await FirebaseInit.dbRef
             .child("chats/rooms")
             .orderByChild("members/${FirebaseInit.auth.currentUser.uid}")
-            .equalTo("member")
+            .startAt("member")
+            .endAt("member\uf8ff")
             .once()
             .then((snapshot) async {
           if (snapshot.value == null) return Right(chats);
 
-          await Future.forEach(snapshot.value, (chatRoom) {
+          await Future.forEach(snapshot.value, (chatRoom) async {
             Map<String, dynamic> chatRoomJson =
                 Map<String, dynamic>.from(chatRoom);
             chatRoomJson["id"] = chatRoom.key;
-            chats[chatRoom.key] = ChatRoom.fromJson(chatRoomJson);
+            ChatRoom chatRoomObj = ChatRoom.fromJson(chatRoomJson);
+
+            String otherMemberID = chatRoomObj.members
+                .where(
+                    (element) => element == FirebaseInit.auth.currentUser.uid)
+                .first;
+
+            String otherMemberType =
+                Map<String, String>.from(chatRoomJson["members"])[otherMemberID]
+                    .replaceAll("member_", "");
+
+            String otherMemberName = await FirebaseInit.dbRef
+                .child("$otherMemberType/$otherMemberID/name")
+                .once()
+                .then((snapshot) => snapshot.value ?? "Error 404");
+
+            chatRoomObj.name = otherMemberName;
+
+            chats[chatRoom.key] = chatRoomObj;
           });
         });
 

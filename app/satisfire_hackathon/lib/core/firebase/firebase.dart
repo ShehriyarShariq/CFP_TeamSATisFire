@@ -7,5 +7,5 @@ class FirebaseInit {
   static final FirebaseAuth auth = FirebaseAuth.instance;
   static final dbRef = FirebaseDatabase.instance.reference();
   static final Reference storageRef = FirebaseStorage.instance.ref();
-  static final FirebaseMessaging fcm = new FirebaseMessaging();
+  static final FirebaseMessaging fcm = new FirebaseMessaging();  
 }

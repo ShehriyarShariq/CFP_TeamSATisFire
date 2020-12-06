@@ -1,5 +1,8 @@
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:get_it/get_it.dart';
+import 'package:satisfire_hackathon/features/chat_room/data/repositories/chat_room_repository_impl.dart';
+import 'package:satisfire_hackathon/features/chat_room/domain/repositories/chat_room_repository.dart';
+import 'package:satisfire_hackathon/features/chat_room/presentation/bloc/chat_room_bloc.dart';
 import 'package:satisfire_hackathon/features/chats/presentation/bloc/chats_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -29,6 +32,14 @@ Future<void> init() async {
   // Repository
   sl.registerLazySingleton<ChatsRepository>(
       () => ChatsRepositoryImpl(networkInfo: sl()));
+
+  //! Features - Chat Room
+  // Bloc
+  sl.registerFactory(() => ChatRoomBloc());
+
+  // Repository
+  sl.registerLazySingleton<ChatRoomRepository>(
+      () => ChatRoomRepositoryImpl(networkInfo: sl()));
 
   //! Core
   sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(sl()));

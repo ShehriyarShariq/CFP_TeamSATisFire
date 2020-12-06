@@ -30,3 +30,5 @@ class InvalidBookingSlotFailure extends Failure {}
 class JoinSessionFailure extends Failure {}
 
 class UnauthorizedUserFailure extends Failure {}
+
+class SaveFailure extends Failure {}
