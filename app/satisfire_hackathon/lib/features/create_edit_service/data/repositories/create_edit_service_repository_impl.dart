@@ -33,11 +33,11 @@ class CreateEditServiceRepositoryImpl extends CreateEditServiceRepository {
           });
         }
 
-        service.images = imageURLs;
+        // service.images = imageURLs;
 
-        await FirebaseInit.dbRef
-            .child("services/$serviceID")
-            .set(service.toJson());
+        // await FirebaseInit.dbRef
+        //     .child("services/$serviceID")
+        //     .set(service.toJson());
 
         return Right(true);
       } catch (e) {

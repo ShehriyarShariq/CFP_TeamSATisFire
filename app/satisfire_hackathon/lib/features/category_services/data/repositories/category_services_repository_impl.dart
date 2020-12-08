@@ -26,10 +26,10 @@ class CategoryServicesRepositoryImpl extends CategoryServicesRepository {
           if (snapshot.value != null) {
             Map<String, dynamic>.from(snapshot.value)
                 .forEach((serviceID, serviceVal) {
-              Service service =
-                  Service.fromJson(Map<String, dynamic>.from(serviceVal));
-              service.id = serviceID;
-              categoryServices.add(service);
+              // Service service =
+              //     Service.fromJson(Map<String, dynamic>.from(serviceVal));
+              // service.id = serviceID;
+              // categoryServices.add(service);
             });
           }
         });

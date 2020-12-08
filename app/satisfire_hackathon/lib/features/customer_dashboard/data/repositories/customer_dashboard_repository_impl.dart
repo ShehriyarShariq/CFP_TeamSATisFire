@@ -28,7 +28,7 @@ class CustomerDashboardRepositoryImpl extends CustomerDashboardRepository {
             Map<String, dynamic>.from(snapshot.value).forEach((key, value) {
               Map<String, String> categoryMap = Map<String, String>.from(value);
               categoryMap['id'] = key;
-              categories.add(Category.fromJson(categoryMap));
+              // categories.add(Category.fromJson(categoryMap));
             });
           }
         });
@@ -64,7 +64,7 @@ class CustomerDashboardRepositoryImpl extends CustomerDashboardRepository {
               Map<String, dynamic> serviceMap =
                   Map<String, dynamic>.from(value);
               serviceMap['id'] = key;
-              services.add(Service.fromJson(serviceMap));
+              // services.add(Service.fromJson(serviceMap));
             });
           }
         });
@@ -96,7 +96,7 @@ class CustomerDashboardRepositoryImpl extends CustomerDashboardRepository {
               Map<String, dynamic> serviceMap =
                   Map<String, dynamic>.from(value);
               serviceMap['id'] = key;
-              popularServices.add(Service.fromJson(serviceMap));
+              // popularServices.add(Service.fromJson(serviceMap));
             });
           }
         });
@@ -109,5 +109,11 @@ class CustomerDashboardRepositoryImpl extends CustomerDashboardRepository {
     } else {
       return Left(NetworkFailure());
     }
+  }
+
+  @override
+  Future<Either<Failure, bool>> endCurrentSession(String bookingID) {
+    // TODO: implement endCurrentSession
+    throw UnimplementedError();
   }
 }

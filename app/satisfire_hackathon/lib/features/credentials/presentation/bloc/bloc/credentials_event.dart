@@ -18,3 +18,11 @@ class RegisterUserEvent extends CredentialsEvent {
 
   RegisterUserEvent({this.func}) : super([func]);
 }
+
+class SendCodeEvent extends CredentialsEvent {}
+
+class CodeSentEvent extends CredentialsEvent {}
+
+class VerifyingCodeEvent extends CredentialsEvent {}
+
+class CodeVerifiedEvent extends CredentialsEvent {}

@@ -4,7 +4,6 @@ import 'package:dartz/dartz.dart';
 import 'package:satisfire_hackathon/core/firebase/firebase.dart';
 import 'package:satisfire_hackathon/core/network/network_info.dart';
 import 'package:satisfire_hackathon/core/util/constants.dart';
-import 'package:satisfire_hackathon/features/chats/data/models/chat_room.dart';
 import 'package:satisfire_hackathon/features/service_details/data/models/review.dart';
 import 'package:satisfire_hackathon/features/service_details/domain/repositories/service_details_repository.dart';
 
@@ -56,11 +55,11 @@ class ServiceDetailsRepositoryImpl extends ServiceDetailsRepository {
             .once()
             .then((snapshot) {
           if (snapshot.value != null) {
-            Map<String, dynamic>.from(snapshot.value)
-                .forEach((bookingID, booking) {
-              serviceReviews
-                  .add(Review.fromJson(Map<String, String>.from(booking)));
-            });
+            // Map<String, dynamic>.from(snapshot.value)
+            //     .forEach((bookingID, booking) {
+            //   serviceReviews
+            //       .add(Review.fromJson(Map<String, String>.from(booking)));
+            // });
           }
         });
 
@@ -83,12 +82,12 @@ class ServiceDetailsRepositoryImpl extends ServiceDetailsRepository {
           chatID = providerID + "_" + FirebaseInit.auth.currentUser.uid;
         }
 
-        ChatRoom newChatRoom = new ChatRoom(
-            members: [FirebaseInit.auth.currentUser.uid, providerID]);
+        // ChatRoom newChatRoom = new ChatRoom(
+        //     members: [FirebaseInit.auth.currentUser.uid, providerID]);
 
-        await FirebaseInit.dbRef
-            .child("chats/rooms/$chatID")
-            .update(await newChatRoom.toJson());
+        // await FirebaseInit.dbRef
+        //     .child("chats/rooms/$chatID")
+        //     .update(await newChatRoom.toJson());
 
         return Right(true);
       } catch (e) {

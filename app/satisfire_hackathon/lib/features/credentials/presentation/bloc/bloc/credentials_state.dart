@@ -11,6 +11,8 @@ class Initial extends CredentialsState {}
 
 class Processing extends CredentialsState {}
 
+class Processed extends CredentialsState {}
+
 class Success extends CredentialsState {
   final bool isAdmin;
 
@@ -18,6 +20,10 @@ class Success extends CredentialsState {
 }
 
 class Registered extends CredentialsState {}
+
+class SendingCode extends CredentialsState {}
+
+class CodeSent extends CredentialsState {}
 
 class Error extends CredentialsState {
   final String errorMessage;

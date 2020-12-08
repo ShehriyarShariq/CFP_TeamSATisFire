@@ -23,6 +23,14 @@ class CredentialsBloc extends Bloc<CredentialsEvent, CredentialsState> {
       final failureOrSuccess = await event.func();
       yield failureOrSuccess.fold(
           (failure) => Error(failure.errorMsg), (success) => Registered());
+    } else if (event is SendCodeEvent) {
+      yield SendingCode();
+    } else if (event is CodeSentEvent) {
+      yield CodeSent();
+    } else if (event is VerifyingCodeEvent) {
+      yield Processing();
+    } else if (event is CodeVerifiedEvent) {
+      yield Processed();
     }
   }
 }

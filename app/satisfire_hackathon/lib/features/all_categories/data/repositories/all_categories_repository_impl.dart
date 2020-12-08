@@ -18,11 +18,11 @@ class AllCategoriesRepositoryImpl extends AllCategoriesRepository {
 
         await FirebaseInit.dbRef.child("categories").once().then((snapshot) {
           if (snapshot.value != null) {
-            Map<String, dynamic>.from(snapshot.value).forEach((key, value) {
-              Map<String, String> categoryMap = Map<String, String>.from(value);
-              categoryMap['id'] = key;
-              categories.add(Category.fromJson(categoryMap));
-            });
+            // Map<String, dynamic>.from(snapshot.value).forEach((key, value) {
+            //   Map<String, String> categoryMap = Map<String, String>.from(value);
+            //   categoryMap['id'] = key;
+            //   categories.add(Category.fromJson(categoryMap));
+            // });
           }
         });
 

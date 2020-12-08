@@ -1,4 +1,6 @@
 class Constants {
+  static const String FIRST_TIME_USER_CHECK_PREF = "firstTime";
+
   static final String MESSAGE_TYPE_TEXT = "text";
   static final String MESSAGE_TYPE_EVENT = "event";
 
