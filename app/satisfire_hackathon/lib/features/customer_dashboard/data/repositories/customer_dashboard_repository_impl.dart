@@ -6,11 +6,13 @@ import 'package:satisfire_hackathon/core/error/failures.dart';
 import 'package:dartz/dartz.dart';
 import 'package:satisfire_hackathon/features/customer_dashboard/domain/repositories/customer_dashboard_repository.dart';
 import 'package:satisfire_hackathon/features/service_details/data/models/service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CustomerDashboardRepositoryImpl extends CustomerDashboardRepository {
   final NetworkInfo networkInfo;
+  final SharedPreferences sharedPreferences;
 
-  CustomerDashboardRepositoryImpl({this.networkInfo});
+  CustomerDashboardRepositoryImpl({this.networkInfo, this.sharedPreferences});
 
   @override
   Future<Either<Failure, List<Category>>> getLimitedCategories() async {
@@ -21,14 +23,13 @@ class CustomerDashboardRepositoryImpl extends CustomerDashboardRepository {
         await FirebaseInit.dbRef
             .child("categories")
             .orderByKey()
-            .limitToFirst(6)
             .once()
             .then((snapshot) {
           if (snapshot.value != null) {
             Map<String, dynamic>.from(snapshot.value).forEach((key, value) {
               Map<String, String> categoryMap = Map<String, String>.from(value);
               categoryMap['id'] = key;
-              // categories.add(Category.fromJson(categoryMap));
+              categories.add(Category.fromJson(categoryMap));
             });
           }
         });
@@ -115,5 +116,13 @@ class CustomerDashboardRepositoryImpl extends CustomerDashboardRepository {
   Future<Either<Failure, bool>> endCurrentSession(String bookingID) {
     // TODO: implement endCurrentSession
     throw UnimplementedError();
+  }
+
+  @override
+  Future<Either<Failure, bool>> logoutCurrentUser() async {
+    await FirebaseInit.auth.signOut();
+    await FirebaseInit.auth.signInAnonymously();
+    await sharedPreferences.remove("isCust");
+    return Right(true);
   }
 }

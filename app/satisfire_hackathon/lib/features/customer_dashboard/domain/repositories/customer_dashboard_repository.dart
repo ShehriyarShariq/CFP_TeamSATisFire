@@ -9,4 +9,5 @@ abstract class CustomerDashboardRepository {
       String queryType, String queryTerm);
   Future<Either<Failure, bool>> endCurrentSession(String bookingID);
   Future<Either<Failure, List<Service>>> getPopularServices();
+  Future<Either<Failure, bool>> logoutCurrentUser();
 }

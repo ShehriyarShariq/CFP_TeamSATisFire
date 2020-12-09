@@ -18,7 +18,9 @@ class WelcomeRepositoryImpl extends WelcomeRepository {
     // if (await networkInfo.isConnected) {
     try {
       User currentUser = FirebaseInit.auth.currentUser;
-      if (currentUser == null) return Left(AuthFailure());
+      if (currentUser == null ||
+          (currentUser != null && currentUser.isAnonymous))
+        return Left(AuthFailure());
 
       bool isCust = await FirebaseInit.dbRef
           .child("customer/${currentUser.uid}")

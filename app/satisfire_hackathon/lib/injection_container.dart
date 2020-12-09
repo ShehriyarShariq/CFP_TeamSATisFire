@@ -3,6 +3,8 @@ import 'package:get_it/get_it.dart';
 import 'package:satisfire_hackathon/features/chat_room/data/repositories/chat_room_repository_impl.dart';
 import 'package:satisfire_hackathon/features/chat_room/domain/repositories/chat_room_repository.dart';
 import 'package:satisfire_hackathon/features/chat_room/presentation/bloc/chat_room_bloc.dart';
+import 'package:satisfire_hackathon/features/customer_dashboard/data/repositories/customer_dashboard_repository_impl.dart';
+import 'package:satisfire_hackathon/features/customer_dashboard/domain/repositories/customer_dashboard_repository.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -35,6 +37,17 @@ Future<void> init() async {
   // Repository
   sl.registerLazySingleton<CredentialsRepository>(
       () => CredentialsRepositoryImpl(networkInfo: sl()));
+
+  //! Features - Customer Dashboard
+  // Bloc
+  // sl.registerFactory(() => CustomerDashboardB());
+
+  // Repository
+  sl.registerLazySingleton<CustomerDashboardRepository>(
+      () => CustomerDashboardRepositoryImpl(
+            networkInfo: sl(),
+            sharedPreferences: sl(),
+          ));
 
   //! Features - Chat Room
   // Bloc

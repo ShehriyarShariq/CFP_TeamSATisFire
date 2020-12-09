@@ -421,6 +421,9 @@ class _OTPState extends State<OTP> {
               'phoneNum': widget.credentials.phoneNum,
             });
 
+            await FirebaseInit.fcm
+                .subscribeToTopic(FirebaseInit.auth.currentUser.uid);
+
             if (widget.credentials.isCustomer) {
               Navigator.pushReplacement(context,
                   MaterialPageRoute(builder: (_) => CustomerDashboard()));

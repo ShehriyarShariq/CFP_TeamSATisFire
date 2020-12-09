@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:satisfire_hackathon/core/firebase/firebase.dart';
 import 'package:satisfire_hackathon/features/credentials/presentation/pages/sign_in.dart';
 import 'package:satisfire_hackathon/features/customer_dashboard/presentation/pages/customer_dashboard.dart';
 import 'package:satisfire_hackathon/features/provider_dashboard/presentation/pages/provider_dashboard.dart';
@@ -52,21 +53,23 @@ class _WelcomeState extends State<Welcome> {
                   MaterialPageRoute(builder: (_) => ProviderDashboard()));
             }
           } else {
+            await FirebaseInit.auth.signInAnonymously();
             // if (await sl<WelcomeRepository>().getIsNewUser()) {
             //   Navigator.of(context).pushReplacement(
             //       MaterialPageRoute(builder: (_) => Onboarding()));
             // } else {
-            Navigator.of(context)
-                .pushReplacement(MaterialPageRoute(builder: (_) => SignIn()));
+            Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (_) => CustomerDashboard()));
             // }
           }
         } else if (state is Error) {
+          await FirebaseInit.auth.signInAnonymously();
           // if (await sl<WelcomeRepository>().getIsNewUser()) {
           //   Navigator.of(context).pushReplacement(
           //       MaterialPageRoute(builder: (_) => Onboarding()));
           // } else {
-          Navigator.of(context)
-              .pushReplacement(MaterialPageRoute(builder: (_) => SignIn()));
+          Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (_) => CustomerDashboard()));
           // }
         }
       },
