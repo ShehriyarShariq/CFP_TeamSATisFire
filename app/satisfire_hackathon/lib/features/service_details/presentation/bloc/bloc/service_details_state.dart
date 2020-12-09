@@ -17,10 +17,4 @@ class LoadedReviews extends ServiceDetailsState {
   LoadedReviews({this.reviews}) : super([reviews]);
 }
 
-class FetchingRating extends ServiceDetailsState {}
-
-class RatingFetched extends ServiceDetailsState {
-  final double rating;
-
-  RatingFetched({this.rating}) : super([rating]);
-}
+class Error extends ServiceDetailsState {}

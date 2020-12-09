@@ -1,6 +1,7 @@
 import 'package:satisfire_hackathon/core/firebase/firebase.dart';
 import 'package:satisfire_hackathon/core/network/network_info.dart';
 import 'package:satisfire_hackathon/core/util/constants.dart';
+import 'package:satisfire_hackathon/core/util/utils.dart';
 import 'package:satisfire_hackathon/features/all_categories/data/models/category.dart';
 import 'package:satisfire_hackathon/core/error/failures.dart';
 import 'package:dartz/dartz.dart';
@@ -16,19 +17,17 @@ class CustomerDashboardRepositoryImpl extends CustomerDashboardRepository {
 
   @override
   Future<Either<Failure, List<Category>>> getLimitedCategories() async {
-    if (await networkInfo.isConnected) {
+    if (await networkInfo.isConnected != null) {
       try {
         List<Category> categories = [];
 
-        await FirebaseInit.dbRef
-            .child("categories")
-            .orderByKey()
-            .once()
-            .then((snapshot) {
+        await FirebaseInit.dbRef.child("categories").once().then((snapshot) {
+          print(snapshot.value);
           if (snapshot.value != null) {
             Map<String, dynamic>.from(snapshot.value).forEach((key, value) {
               Map<String, String> categoryMap = Map<String, String>.from(value);
               categoryMap['id'] = key;
+              print(categoryMap);
               categories.add(Category.fromJson(categoryMap));
             });
           }
@@ -36,7 +35,7 @@ class CustomerDashboardRepositoryImpl extends CustomerDashboardRepository {
 
         return Right(categories);
       } catch (e) {
-        print("Exception in getLimitedCategories(): " + e);
+        print("Exception in getLimitedCategories(): " + e.toString());
         return Left(DbLoadFailure());
       }
     } else {
@@ -47,7 +46,7 @@ class CustomerDashboardRepositoryImpl extends CustomerDashboardRepository {
   @override
   Future<Either<Failure, List<Service>>> getQueriedServices(
       String queryType, String queryTerm) async {
-    if (await networkInfo.isConnected) {
+    if (await networkInfo.isConnected != null) {
       try {
         List<Service> services = [];
 
@@ -72,7 +71,7 @@ class CustomerDashboardRepositoryImpl extends CustomerDashboardRepository {
 
         return Right(services);
       } catch (e) {
-        print("Exception in getQueriedServices(): " + e);
+        print("Exception in getQueriedServices(): " + e.toString());
         return Left(DbLoadFailure());
       }
     } else {
@@ -82,7 +81,7 @@ class CustomerDashboardRepositoryImpl extends CustomerDashboardRepository {
 
   @override
   Future<Either<Failure, List<Service>>> getPopularServices() async {
-    if (await networkInfo.isConnected) {
+    if (await networkInfo.isConnected != null) {
       try {
         List<Service> popularServices = [];
 
@@ -91,20 +90,47 @@ class CustomerDashboardRepositoryImpl extends CustomerDashboardRepository {
             .orderByChild("ranking")
             .equalTo(0)
             .once()
-            .then((snapshot) {
+            .then((snapshot) async {
           if (snapshot.value != null) {
-            Map<String, dynamic>.from(snapshot.value).forEach((key, value) {
+            await Future.forEach(
+                Map<String, dynamic>.from(snapshot.value).entries,
+                (serviceEntry) async {
               Map<String, dynamic> serviceMap =
-                  Map<String, dynamic>.from(value);
-              serviceMap['id'] = key;
-              // popularServices.add(Service.fromJson(serviceMap));
+                  Map<String, dynamic>.from(serviceEntry.value);
+              serviceMap['id'] = serviceEntry.key;
+
+              serviceMap['providerName'] = await FirebaseInit.dbRef
+                  .child("provider/${serviceEntry.value['provider_id']}/name")
+                  .once()
+                  .then((snapshot) =>
+                      Utils.getFirstLetterOfWordsCapped(snapshot.value) ?? "");
+
+              await FirebaseInit.dbRef
+                  .child("service_ranking/${serviceEntry.key}")
+                  .once()
+                  .then((snapshot) {
+                if (snapshot.value != null) {
+                  double totalCount = 0;
+                  double totalScore = 0;
+                  Map<String, int>.from(snapshot.value).forEach((key, value) {
+                    totalScore += Constants.RATING_MAP[key] * value;
+                    totalCount += value;
+                  });
+                  serviceMap['rating'] = (totalScore / totalCount);
+                  print(serviceMap['rating']);
+                } else {
+                  serviceMap['rating'] = 0.0;
+                }
+              });
+
+              popularServices.add(Service.fromJson(serviceMap));
             });
           }
         });
 
         return Right(popularServices);
       } catch (e) {
-        print("Exception in getPopularServices(): " + e);
+        print("Exception in getPopularServices(): " + e.toString());
         return Left(DbLoadFailure());
       }
     } else {

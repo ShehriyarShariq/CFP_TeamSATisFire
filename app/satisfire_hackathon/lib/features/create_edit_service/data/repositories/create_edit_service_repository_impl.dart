@@ -17,7 +17,7 @@ class CreateEditServiceRepositoryImpl extends CreateEditServiceRepository {
   @override
   Future<Either<Failure, bool>> saveService(
       Service service, List<File> images) async {
-    if (await networkInfo.isConnected) {
+    if (await networkInfo.isConnected != null) {
       try {
         String serviceID = FirebaseInit.auth.currentUser.uid +
             "_" +
@@ -41,7 +41,7 @@ class CreateEditServiceRepositoryImpl extends CreateEditServiceRepository {
 
         return Right(true);
       } catch (e) {
-        print("Exception in saveService(): " + e);
+        print("Exception in saveService(): " + e.toString());
         return Left(ProcessFailure());
       }
     } else {

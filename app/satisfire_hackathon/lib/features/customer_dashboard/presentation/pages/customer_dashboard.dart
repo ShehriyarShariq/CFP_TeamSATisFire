@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:satisfire_hackathon/core/firebase/firebase.dart';
 import 'package:satisfire_hackathon/core/ui/category_widget.dart';
+import 'package:satisfire_hackathon/core/ui/loader.dart';
 import 'package:satisfire_hackathon/core/ui/no_glow_scroll_behavior.dart';
 import 'package:satisfire_hackathon/core/ui/service_widget.dart';
 import 'package:satisfire_hackathon/core/ui/upcoming_booking_widget.dart';
+import 'package:satisfire_hackathon/features/all_categories/data/models/category.dart';
 import 'package:satisfire_hackathon/features/credentials/presentation/pages/sign_in.dart';
 import 'package:satisfire_hackathon/features/credentials/presentation/pages/sign_up.dart';
 import 'package:satisfire_hackathon/features/customer_dashboard/domain/repositories/customer_dashboard_repository.dart';
+import 'package:satisfire_hackathon/features/customer_dashboard/presentation/bloc/bloc/customer_dashboard_bloc.dart';
+import 'package:satisfire_hackathon/features/service_details/data/models/service.dart';
 
 import '../../../../injection_container.dart';
 
@@ -18,6 +23,24 @@ class CustomerDashboard extends StatefulWidget {
 
 class _CustomerDashboardState extends State<CustomerDashboard> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  CustomerDashboardBloc _categoriesBloc, _servicesBloc;
+
+  List<Category> categories = [];
+  List<Service> popularServices = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    _categoriesBloc = sl<CustomerDashboardBloc>();
+    _servicesBloc = sl<CustomerDashboardBloc>();
+
+    _categoriesBloc.add(LoadAllCategoriesEvent(
+        func: sl<CustomerDashboardRepository>().getLimitedCategories));
+    _servicesBloc.add(LoadPopularServicesEvent(
+        func: sl<CustomerDashboardRepository>().getPopularServices));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -260,9 +283,14 @@ class _CustomerDashboardState extends State<CustomerDashboard> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Icon(
-                        Icons.menu,
-                        size: 30,
+                      GestureDetector(
+                        onTap: () {
+                          _scaffoldKey.currentState.openDrawer();
+                        },
+                        child: Icon(
+                          Icons.menu,
+                          size: 30,
+                        ),
                       ),
                       Image.asset(
                         "img/app_name_alt.png",
@@ -351,13 +379,42 @@ class _CustomerDashboardState extends State<CustomerDashboard> {
                           ),
                         ),
                         SizedBox(
-                          height: MediaQuery.of(context).size.width * 0.33,
-                          child: ListView.builder(
-                            itemCount: 5,
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder: (context, index) => CategoryWidget(),
-                          ),
-                        ),
+                            height: MediaQuery.of(context).size.width * 0.33,
+                            child: BlocBuilder(
+                              cubit: _categoriesBloc,
+                              builder: (context, state) {
+                                if (state is Initial ||
+                                    state is LoadingCategories) {
+                                  return Center(
+                                    child: Loader(),
+                                  );
+                                } else if (state is LoadedCategories) {
+                                  categories.clear();
+                                  categories.addAll(state.categories);
+                                }
+
+                                if (categories.isEmpty) {
+                                  return Center(
+                                    child: Text(
+                                      "No Categories Available",
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.black.withOpacity(0.4),
+                                      ),
+                                    ),
+                                  );
+                                }
+
+                                return ListView.builder(
+                                  itemCount: categories.length,
+                                  scrollDirection: Axis.horizontal,
+                                  itemBuilder: (context, index) =>
+                                      CategoryWidget(
+                                    category: categories[index],
+                                  ),
+                                );
+                              },
+                            )),
                         if (!FirebaseInit.auth.currentUser.isAnonymous) ...[
                           SizedBox(
                             height: 25,
@@ -417,11 +474,42 @@ class _CustomerDashboardState extends State<CustomerDashboard> {
                             ],
                           ),
                         ),
-                        ListView.builder(
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount: 1,
-                          shrinkWrap: true,
-                          itemBuilder: (context, index) => ServiceWidget(),
+                        BlocBuilder(
+                          cubit: _servicesBloc,
+                          builder: (context, state) {
+                            if (state is Initial || state is LoadingServices) {
+                              return Center(
+                                child: Loader(),
+                              );
+                            } else if (state is LoadedServices) {
+                              popularServices.clear();
+                              popularServices.addAll(state.services);
+                            }
+
+                            if (categories.isEmpty) {
+                              return Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(top: 20),
+                                  child: Text(
+                                    "No Services Available",
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.black.withOpacity(0.4),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }
+
+                            return ListView.builder(
+                              physics: NeverScrollableScrollPhysics(),
+                              itemCount: popularServices.length,
+                              shrinkWrap: true,
+                              itemBuilder: (context, index) => ServiceWidget(
+                                service: popularServices[index],
+                              ),
+                            );
+                          },
                         ),
                         SizedBox(
                           height: 25,

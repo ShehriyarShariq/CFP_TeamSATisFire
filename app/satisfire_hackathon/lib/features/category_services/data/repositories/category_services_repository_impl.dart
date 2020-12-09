@@ -13,7 +13,7 @@ class CategoryServicesRepositoryImpl extends CategoryServicesRepository {
   @override
   Future<Either<Failure, List<Service>>> getAllCategoryServices(
       String categoryID) async {
-    if (await networkInfo.isConnected) {
+    if (await networkInfo.isConnected != null) {
       try {
         List<Service> categoryServices = [];
 
@@ -36,7 +36,7 @@ class CategoryServicesRepositoryImpl extends CategoryServicesRepository {
 
         return Right(categoryServices);
       } catch (e) {
-        print("Exception in getAllCategoryServices(): " + e);
+        print("Exception in getAllCategoryServices(): " + e.toString());
         return Left(DbLoadFailure());
       }
     } else {

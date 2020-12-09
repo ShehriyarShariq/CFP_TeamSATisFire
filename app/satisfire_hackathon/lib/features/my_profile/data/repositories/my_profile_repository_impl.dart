@@ -16,7 +16,7 @@ class MyProfileRepositoryImpl extends MyProfileRepository {
 
   @override
   Future<Either<Failure, bool>> updateData(String type, String data) async {
-    if (await networkInfo.isConnected) {
+    if (await networkInfo.isConnected != null) {
       try {
         await FirebaseInit.dbRef
             .child((sharedPreferences.getBool("isProvider")
@@ -31,7 +31,7 @@ class MyProfileRepositoryImpl extends MyProfileRepository {
 
         return Right(true);
       } catch (e) {
-        print("Exception in updateData(): " + e);
+        print("Exception in updateData(): " + e.toString());
         return Left(ProcessFailure());
       }
     } else {
@@ -41,7 +41,7 @@ class MyProfileRepositoryImpl extends MyProfileRepository {
 
   @override
   Future<Either<Failure, bool>> uploadProfileImage(File image) async {
-    if (await networkInfo.isConnected) {
+    if (await networkInfo.isConnected != null) {
       try {
         UploadTask uploadTask = FirebaseInit.storageRef
             .child("users/${FirebaseInit.auth.currentUser.uid}")
@@ -61,7 +61,7 @@ class MyProfileRepositoryImpl extends MyProfileRepository {
 
         return Right(true);
       } catch (e) {
-        print("Exception in uploadProfileImage(): " + e);
+        print("Exception in uploadProfileImage(): " + e.toString());
         return Left(ProcessFailure());
       }
     } else {

@@ -5,6 +5,11 @@ import 'package:satisfire_hackathon/features/chat_room/domain/repositories/chat_
 import 'package:satisfire_hackathon/features/chat_room/presentation/bloc/chat_room_bloc.dart';
 import 'package:satisfire_hackathon/features/customer_dashboard/data/repositories/customer_dashboard_repository_impl.dart';
 import 'package:satisfire_hackathon/features/customer_dashboard/domain/repositories/customer_dashboard_repository.dart';
+import 'package:satisfire_hackathon/features/provider_dashboard/data/repositories/provider_dashboard_repository_impl.dart';
+import 'package:satisfire_hackathon/features/provider_dashboard/domain/repositories/provider_dashboard_repository.dart';
+import 'package:satisfire_hackathon/features/service_details/data/repositories/service_details_repository_impl.dart';
+import 'package:satisfire_hackathon/features/service_details/domain/repositories/service_details_repository.dart';
+import 'package:satisfire_hackathon/features/service_details/presentation/bloc/bloc/service_details_bloc.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -13,6 +18,7 @@ import 'core/network/network_info.dart';
 import 'features/credentials/data/repositories/credentials_repository_impl.dart';
 import 'features/credentials/domain/repositories/credentials_repository.dart';
 import 'features/credentials/presentation/bloc/bloc/credentials_bloc.dart';
+import 'features/customer_dashboard/presentation/bloc/bloc/customer_dashboard_bloc.dart';
 import 'features/welcome/data/repositories/welcome_repository_impl.dart';
 import 'features/welcome/domain/repositories/welcome_repository.dart';
 import 'features/welcome/presentation/bloc/bloc/welcome_bloc.dart';
@@ -40,13 +46,34 @@ Future<void> init() async {
 
   //! Features - Customer Dashboard
   // Bloc
-  // sl.registerFactory(() => CustomerDashboardB());
+  sl.registerFactory(() => CustomerDashboardBloc());
 
   // Repository
   sl.registerLazySingleton<CustomerDashboardRepository>(
       () => CustomerDashboardRepositoryImpl(
             networkInfo: sl(),
             sharedPreferences: sl(),
+          ));
+
+  //! Features - Provider Dashboard
+  // Bloc
+  // sl.registerFactory(() => CustomerDashboardBloc());
+
+  // Repository
+  sl.registerLazySingleton<ProviderDashboardRepository>(
+      () => ProviderDashboardRepositoryImpl(
+            networkInfo: sl(),
+            sharedPreferences: sl(),
+          ));
+
+  //! Features - Provider Dashboard
+  // Bloc
+  sl.registerFactory(() => ServiceDetailsBloc());
+
+  // Repository
+  sl.registerLazySingleton<ServiceDetailsRepository>(
+      () => ServiceDetailsRepositoryImpl(
+            networkInfo: sl(),
           ));
 
   //! Features - Chat Room

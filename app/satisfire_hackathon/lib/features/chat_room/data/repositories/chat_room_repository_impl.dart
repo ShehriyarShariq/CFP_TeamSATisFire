@@ -15,7 +15,7 @@ class ChatRoomRepositoryImpl extends ChatRoomRepository {
   @override
   Future<Either<Failure, bool>> respondToEvent(
       String chatID, String messageID, bool isAccept) async {
-    if (await networkInfo.isConnected) {
+    if (await networkInfo.isConnected != null) {
       try {
         await FirebaseInit.dbRef
             .child("chats/messages/$chatID/$messageID/eventStatus")
@@ -25,7 +25,7 @@ class ChatRoomRepositoryImpl extends ChatRoomRepository {
 
         return Right(true);
       } catch (e) {
-        print("Exception in respondToEvent(): " + e);
+        print("Exception in respondToEvent(): " + e.toString());
         return Left(ProcessFailure());
       }
     } else {
@@ -36,7 +36,7 @@ class ChatRoomRepositoryImpl extends ChatRoomRepository {
   @override
   Future<Either<Failure, bool>> sendMessage(
       String chatID, Message message) async {
-    if (await networkInfo.isConnected) {
+    if (await networkInfo.isConnected != null) {
       try {
         await FirebaseInit.dbRef
             .child("chats/rooms/$chatID/recentMessage")
@@ -49,7 +49,7 @@ class ChatRoomRepositoryImpl extends ChatRoomRepository {
 
         return Right(true);
       } catch (e) {
-        print("Exception in sendMessage(): " + e);
+        print("Exception in sendMessage(): " + e.toString());
         return Left(ProcessFailure());
       }
     } else {

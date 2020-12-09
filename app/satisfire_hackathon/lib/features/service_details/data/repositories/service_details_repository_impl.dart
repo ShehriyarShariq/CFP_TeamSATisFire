@@ -14,7 +14,7 @@ class ServiceDetailsRepositoryImpl extends ServiceDetailsRepository {
 
   @override
   Future<Either<Failure, int>> getServiceRating(String serviceID) async {
-    if (await networkInfo.isConnected) {
+    if (await networkInfo.isConnected != null) {
       try {
         int rating = -1;
 
@@ -35,7 +35,7 @@ class ServiceDetailsRepositoryImpl extends ServiceDetailsRepository {
 
         return Right(rating);
       } catch (e) {
-        print("Exception in getServiceRating(): " + e);
+        print("Exception in getServiceRating(): " + e.toString());
         return Left(DbLoadFailure());
       }
     } else {
@@ -46,7 +46,7 @@ class ServiceDetailsRepositoryImpl extends ServiceDetailsRepository {
   @override
   Future<Either<Failure, List<Review>>> getServiceReviews(
       String serviceID) async {
-    if (await networkInfo.isConnected) {
+    if (await networkInfo.isConnected != null) {
       try {
         List<Review> serviceReviews = [];
 
@@ -55,17 +55,17 @@ class ServiceDetailsRepositoryImpl extends ServiceDetailsRepository {
             .once()
             .then((snapshot) {
           if (snapshot.value != null) {
-            // Map<String, dynamic>.from(snapshot.value)
-            //     .forEach((bookingID, booking) {
-            //   serviceReviews
-            //       .add(Review.fromJson(Map<String, String>.from(booking)));
-            // });
+            Map<String, dynamic>.from(snapshot.value)
+                .forEach((bookingID, booking) {
+              serviceReviews
+                  .add(Review.fromJson(Map<String, dynamic>.from(booking)));
+            });
           }
         });
 
         return Right(serviceReviews);
       } catch (e) {
-        print("Exception in getServiceReviews(): " + e);
+        print("Exception in getServiceReviews(): " + e.toString());
         return Left(DbLoadFailure());
       }
     } else {
@@ -75,7 +75,7 @@ class ServiceDetailsRepositoryImpl extends ServiceDetailsRepository {
 
   @override
   Future<Either<Failure, bool>> makeChatRoom(String providerID) async {
-    if (await networkInfo.isConnected) {
+    if (await networkInfo.isConnected != null) {
       try {
         String chatID = FirebaseInit.auth.currentUser.uid + "_" + providerID;
         if (FirebaseInit.auth.currentUser.uid.compareTo(providerID) > 0) {
@@ -91,7 +91,7 @@ class ServiceDetailsRepositoryImpl extends ServiceDetailsRepository {
 
         return Right(true);
       } catch (e) {
-        print("Exception in makeChatRoom(): " + e);
+        print("Exception in makeChatRoom(): " + e.toString());
         return Left(DbLoadFailure());
       }
     } else {

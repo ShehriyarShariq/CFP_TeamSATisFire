@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:satisfire_hackathon/core/firebase/firebase.dart';
+import 'package:satisfire_hackathon/core/ui/loader.dart';
 import 'package:satisfire_hackathon/core/ui/no_glow_scroll_behavior.dart';
+import 'package:satisfire_hackathon/features/service_details/data/models/review.dart';
 import 'package:satisfire_hackathon/features/service_details/data/models/service.dart';
+import 'package:satisfire_hackathon/features/service_details/domain/repositories/service_details_repository.dart';
 import 'package:satisfire_hackathon/features/service_details/presentation/bloc/bloc/service_details_bloc.dart';
 import 'package:satisfire_hackathon/features/service_details/presentation/widgets/service_images_pager_widget.dart';
+
+import '../../../../injection_container.dart';
 
 class ServiceDetails extends StatefulWidget {
   Service service;
@@ -17,6 +24,18 @@ class ServiceDetails extends StatefulWidget {
 
 class _ServiceDetailsState extends State<ServiceDetails> {
   ServiceDetailsBloc _bloc;
+
+  List<Review> reviews = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    _bloc = sl<ServiceDetailsBloc>();
+    _bloc.add(LoadReviewsEvent(
+        func: () => sl<ServiceDetailsRepository>()
+            .getServiceReviews(widget.service.id)));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,9 +56,14 @@ class _ServiceDetailsState extends State<ServiceDetails> {
                     horizontal: MediaQuery.of(context).size.width * 0.06),
                 child: Row(
                   children: [
-                    Icon(
-                      Icons.arrow_back,
-                      size: 26,
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: Icon(
+                        Icons.arrow_back,
+                        size: 26,
+                      ),
                     ),
                     SizedBox(
                       width: 10,
@@ -76,7 +100,7 @@ class _ServiceDetailsState extends State<ServiceDetails> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "Cooking Class",
+                                    "${widget.service.title}",
                                     style: TextStyle(
                                       fontSize: 18,
                                       fontFamily: 'Roboto',
@@ -87,7 +111,7 @@ class _ServiceDetailsState extends State<ServiceDetails> {
                                     height: 10,
                                   ),
                                   Text(
-                                    "by Shamma Bano",
+                                    "by ${widget.service.providerName}",
                                     style: TextStyle(
                                       fontSize: 12,
                                       fontFamily: 'Roboto',
@@ -112,10 +136,7 @@ class _ServiceDetailsState extends State<ServiceDetails> {
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: ServiceImagesPagerWidget(
-                                    images: [
-                                      'https://i2.wp.com/www.eatthis.com/wp-content/uploads/2020/07/cooking-with-olive-oil.jpg?resize=640%2C360&ssl=1',
-                                      'https://i2.wp.com/www.eatthis.com/wp-content/uploads/2020/07/cooking-with-olive-oil.jpg?resize=640%2C360&ssl=1'
-                                    ],
+                                    images: widget.service.images,
                                   ),
                                 ),
                               ),
@@ -134,9 +155,10 @@ class _ServiceDetailsState extends State<ServiceDetails> {
                                 ),
                               ),
                             ),
-                            Padding(
+                            Container(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 10),
+                              alignment: Alignment.centerLeft,
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -144,7 +166,7 @@ class _ServiceDetailsState extends State<ServiceDetails> {
                                     height: 10,
                                   ),
                                   Text(
-                                    "Learn how to cook a variety of cuisines. Specialty in Biryani.",
+                                    widget.service.description,
                                     style: TextStyle(
                                       fontSize: 12,
                                       fontFamily: 'Roboto',
@@ -155,7 +177,7 @@ class _ServiceDetailsState extends State<ServiceDetails> {
                                     height: 10,
                                   ),
                                   Text(
-                                    "Service is available Face to Face and Online",
+                                    "Service is available in ${widget.service.typeStr}",
                                     style: TextStyle(
                                       fontSize: 12,
                                       fontFamily: 'Roboto',
@@ -167,7 +189,7 @@ class _ServiceDetailsState extends State<ServiceDetails> {
                                     height: 10,
                                   ),
                                   Text(
-                                    "Price Rs.1000",
+                                    "Price Rs.${widget.service.price}",
                                     style: TextStyle(
                                       fontSize: 12,
                                       fontFamily: 'Roboto',
@@ -201,7 +223,7 @@ class _ServiceDetailsState extends State<ServiceDetails> {
                                       width: 2,
                                     ),
                                     Text(
-                                      "4.5",
+                                      widget.service.rating.toString(),
                                       style: TextStyle(
                                         fontSize: 15,
                                         fontFamily: 'Roboto',
@@ -215,12 +237,44 @@ class _ServiceDetailsState extends State<ServiceDetails> {
                             SizedBox(
                               height: 15,
                             ),
-                            ListView.builder(
-                              physics: NeverScrollableScrollPhysics(),
-                              shrinkWrap: true,
-                              itemCount: 2,
-                              itemBuilder: (context, index) =>
-                                  getReviewWidget(),
+                            BlocBuilder(
+                              cubit: _bloc,
+                              builder: (context, state) {
+                                if (state is Initial ||
+                                    state is LoadingReviews) {
+                                  return Center(
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(top: 20),
+                                      child: Loader(),
+                                    ),
+                                  );
+                                } else if (state is LoadedReviews) {
+                                  reviews.addAll(state.reviews);
+                                }
+
+                                if (reviews.isEmpty) {
+                                  return Center(
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(top: 20),
+                                      child: Text(
+                                        "No Reviews Yet",
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.black.withOpacity(0.4),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                }
+
+                                return ListView.builder(
+                                  physics: NeverScrollableScrollPhysics(),
+                                  shrinkWrap: true,
+                                  itemCount: reviews.length,
+                                  itemBuilder: (context, index) =>
+                                      getReviewWidget(reviews[index]),
+                                );
+                              },
                             )
                           ],
                         ),
@@ -229,40 +283,42 @@ class _ServiceDetailsState extends State<ServiceDetails> {
                   ),
                 ),
               ),
-              Divider(
-                thickness: 0.5,
-                height: 1,
-                color: Color(0xFFC28EC5),
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.width * 0.03,
-              ),
-              RaisedButton(
-                elevation: 0.5,
-                color: Color(0xFFC28EC5),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5)),
-                child: SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.8,
-                  child: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      child: Text(
-                        'Contact provider for booking >',
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 14,
-                            fontFamily: 'Roboto',
-                            fontWeight: FontWeight.w500),
+              if (!FirebaseInit.auth.currentUser.isAnonymous) ...[
+                Divider(
+                  thickness: 0.5,
+                  height: 1,
+                  color: Color(0xFFC28EC5),
+                ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.width * 0.03,
+                ),
+                RaisedButton(
+                  elevation: 0.5,
+                  color: Color(0xFFC28EC5),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5)),
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.8,
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        child: Text(
+                          'Contact provider for booking >',
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 14,
+                              fontFamily: 'Roboto',
+                              fontWeight: FontWeight.w500),
+                        ),
                       ),
                     ),
                   ),
+                  onPressed: () {},
                 ),
-                onPressed: () {},
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.width * 0.03,
-              ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.width * 0.03,
+                ),
+              ]
             ],
           ),
         ),
@@ -270,7 +326,7 @@ class _ServiceDetailsState extends State<ServiceDetails> {
     );
   }
 
-  Widget getReviewWidget() {
+  Widget getReviewWidget(Review review) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 5),
       alignment: Alignment.centerLeft,
@@ -290,7 +346,7 @@ class _ServiceDetailsState extends State<ServiceDetails> {
           ),
           RatingBar.builder(
             ignoreGestures: true,
-            initialRating: 3,
+            initialRating: review.rating.toDouble(),
             itemSize: 14,
             itemBuilder: (context, _) => Icon(
               Icons.star,
@@ -302,7 +358,7 @@ class _ServiceDetailsState extends State<ServiceDetails> {
             height: 5,
           ),
           Text(
-            "Excellent service. Shamma aunty taught me how to cook the best Biryani ever.",
+            review.message,
             style: TextStyle(
               fontSize: 12,
               fontFamily: 'Roboto',

@@ -15,7 +15,7 @@ class WelcomeRepositoryImpl extends WelcomeRepository {
 
   @override
   Future<Either<Failure, Map<String, bool>>> checkCurrentUser() async {
-    // if (await networkInfo.isConnected) {
+    // if (await networkInfo.isConnected != null) {
     try {
       User currentUser = FirebaseInit.auth.currentUser;
       if (currentUser == null ||

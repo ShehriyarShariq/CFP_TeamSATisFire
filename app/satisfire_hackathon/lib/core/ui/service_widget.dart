@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:satisfire_hackathon/core/util/utils.dart';
 import 'package:satisfire_hackathon/features/service_details/data/models/service.dart';
 import 'package:satisfire_hackathon/features/service_details/presentation/pages/service_details.dart';
 
@@ -39,10 +40,18 @@ class ServiceWidget extends StatelessWidget {
                     right: 0,
                     bottom: 0,
                     left: 0,
-                    child: Image.asset(
-                      "img/service.png",
-                      fit: BoxFit.cover,
-                    ),
+                    child: service.images.isNotEmpty
+                        ? FadeInImage(
+                            imageErrorBuilder:
+                                (context, exception, stackTrace) {
+                              return Container(
+                                child: Image.asset('img/service.png'),
+                              );
+                            },
+                            image: NetworkImage(service.images[0]),
+                            placeholder: AssetImage('img/service.png'),
+                            fit: BoxFit.cover)
+                        : Image.asset("img/service.png", fit: BoxFit.cover),
                   ),
                   Positioned(
                     left: 0,
@@ -65,7 +74,7 @@ class ServiceWidget extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "Cooking Class - Biryani",
+                                  service.title,
                                   style: TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.w700,
@@ -75,7 +84,7 @@ class ServiceWidget extends StatelessWidget {
                                   height: 5,
                                 ),
                                 Text(
-                                  "Shamma Bano",
+                                  service.providerName,
                                   style: TextStyle(fontSize: 12),
                                 )
                               ],
@@ -112,7 +121,7 @@ class ServiceWidget extends StatelessWidget {
                                             width: 5,
                                           ),
                                           Text(
-                                            "4.5 - Sewing",
+                                            "${service.rating} - ${Utils.getFirstLetterOfWordsCapped(service.category.name)}",
                                             style: TextStyle(fontSize: 12),
                                           ),
                                         ],

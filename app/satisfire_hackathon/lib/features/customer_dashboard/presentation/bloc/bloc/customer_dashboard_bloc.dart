@@ -19,6 +19,7 @@ class CustomerDashboardBloc
     if (event is LoadAllCategoriesEvent) {
       yield LoadingCategories();
       final failureOrCategories = await event.func();
+      print(failureOrCategories);
       yield failureOrCategories.fold((failure) => ErrorLoadingCategories(),
           (categories) => LoadedCategories(categories: categories));
     } else if (event is LoadPopularServicesEvent) {

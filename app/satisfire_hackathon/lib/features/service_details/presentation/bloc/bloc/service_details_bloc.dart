@@ -15,6 +15,11 @@ class ServiceDetailsBloc
   Stream<ServiceDetailsState> mapEventToState(
     ServiceDetailsEvent event,
   ) async* {
-    // TODO: implement mapEventToState
+    if (event is LoadReviewsEvent) {
+      yield LoadingReviews();
+      final failureOrReviews = await event.func();
+      yield failureOrReviews.fold(
+          (failure) => Error(), (reviews) => LoadedReviews(reviews: reviews));
+    }
   }
 }
