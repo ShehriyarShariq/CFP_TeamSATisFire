@@ -17,7 +17,7 @@ class CustomerDashboardRepositoryImpl extends CustomerDashboardRepository {
 
   @override
   Future<Either<Failure, List<Category>>> getLimitedCategories() async {
-    if (await networkInfo.isConnected != null) {
+    if (networkInfo.isConnected != null) {
       try {
         List<Category> categories = [];
 
@@ -46,7 +46,7 @@ class CustomerDashboardRepositoryImpl extends CustomerDashboardRepository {
   @override
   Future<Either<Failure, List<Service>>> getQueriedServices(
       String queryType, String queryTerm) async {
-    if (await networkInfo.isConnected != null) {
+    if (networkInfo.isConnected != null) {
       try {
         List<Service> services = [];
 
@@ -81,7 +81,7 @@ class CustomerDashboardRepositoryImpl extends CustomerDashboardRepository {
 
   @override
   Future<Either<Failure, List<Service>>> getPopularServices() async {
-    if (await networkInfo.isConnected != null) {
+    if (networkInfo.isConnected != null) {
       try {
         List<Service> popularServices = [];
 

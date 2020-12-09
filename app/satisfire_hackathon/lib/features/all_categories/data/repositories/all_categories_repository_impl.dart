@@ -12,7 +12,7 @@ class AllCategoriesRepositoryImpl extends AllCategoriesRepository {
 
   @override
   Future<Either<Failure, List<Category>>> getAllCategories() async {
-    if (await networkInfo.isConnected != null) {
+    if (networkInfo.isConnected != null) {
       try {
         List<Category> categories = [];
 

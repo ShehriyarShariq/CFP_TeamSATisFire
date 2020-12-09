@@ -14,7 +14,7 @@ class ServiceDetailsRepositoryImpl extends ServiceDetailsRepository {
 
   @override
   Future<Either<Failure, int>> getServiceRating(String serviceID) async {
-    if (await networkInfo.isConnected != null) {
+    if (networkInfo.isConnected != null) {
       try {
         int rating = -1;
 
@@ -46,7 +46,7 @@ class ServiceDetailsRepositoryImpl extends ServiceDetailsRepository {
   @override
   Future<Either<Failure, List<Review>>> getServiceReviews(
       String serviceID) async {
-    if (await networkInfo.isConnected != null) {
+    if (networkInfo.isConnected != null) {
       try {
         List<Review> serviceReviews = [];
 
@@ -74,22 +74,20 @@ class ServiceDetailsRepositoryImpl extends ServiceDetailsRepository {
   }
 
   @override
-  Future<Either<Failure, bool>> makeChatRoom(String providerID) async {
-    if (await networkInfo.isConnected != null) {
+  Future<Either<Failure, String>> makeChatRoom(String providerID) async {
+    if (networkInfo.isConnected != null) {
       try {
         String chatID = FirebaseInit.auth.currentUser.uid + "_" + providerID;
         if (FirebaseInit.auth.currentUser.uid.compareTo(providerID) > 0) {
           chatID = providerID + "_" + FirebaseInit.auth.currentUser.uid;
         }
 
-        // ChatRoom newChatRoom = new ChatRoom(
-        //     members: [FirebaseInit.auth.currentUser.uid, providerID]);
+        await FirebaseInit.dbRef.child("chats/rooms/$chatID/members").set({
+          FirebaseInit.auth.currentUser.uid: "member_customer",
+          providerID: "member_provider",
+        });
 
-        // await FirebaseInit.dbRef
-        //     .child("chats/rooms/$chatID")
-        //     .update(await newChatRoom.toJson());
-
-        return Right(true);
+        return Right(chatID);
       } catch (e) {
         print("Exception in makeChatRoom(): " + e.toString());
         return Left(DbLoadFailure());

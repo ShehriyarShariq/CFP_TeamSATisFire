@@ -15,7 +15,7 @@ class CredentialsRepositoryImpl extends CredentialsRepository {
   // @override
   // Future<Either<Failure, bool>> signInWithCredentials(
   //     CredentialsModel credentials) async {
-  //   if (await networkInfo.isConnected != null) {
+  //   if (networkInfo.isConnected != null) {
   //     try {
   //       await FirebaseInit.auth.signInWithEmailAndPassword(
   //           email: credentials.email, password: credentials.password);
@@ -46,7 +46,7 @@ class CredentialsRepositoryImpl extends CredentialsRepository {
   // @override
   // Future<Either<Failure, bool>> signUpWithCredentials(
   //     CredentialsModel credentials) async {
-  //   if (await networkInfo.isConnected != null) {
+  //   if (networkInfo.isConnected != null) {
   //     try {
   //       await FirebaseInit.auth.(credentials.phoneNum);
 
@@ -73,7 +73,7 @@ class CredentialsRepositoryImpl extends CredentialsRepository {
 
   // @override
   // Future<Either<Failure, bool>> sendPasswordResetEmail(String email) async {
-  //   if (await networkInfo.isConnected != null) {
+  //   if (networkInfo.isConnected != null) {
   //     try {
   //       await FirebaseInit.auth.sendPasswordResetEmail(email: email);
 

@@ -12,3 +12,9 @@ class LoadReviewsEvent extends ServiceDetailsEvent {
 
   LoadReviewsEvent({this.func}) : super([func]);
 }
+
+class OpenChatRoomEvent extends ServiceDetailsEvent {
+  final Function func;
+
+  OpenChatRoomEvent({this.func}) : super([func]);
+}

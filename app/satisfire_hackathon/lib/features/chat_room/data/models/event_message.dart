@@ -36,12 +36,12 @@ class EventMessage extends Message {
         eventStatus: json['eventStatus'],
       );
 
-  Future<Map<String, dynamic>> toJson({bool isRecentMessage = false}) async {
+  Map<String, dynamic> toJson({bool isRecentMessage = false}) {
     return {
       "sentBy": super.sender,
       "message": super.message,
       "type": super.type,
-      "timestamp": (await NTP.now()).millisecondsSinceEpoch,
+      "timestamp": DateTime.now().millisecondsSinceEpoch,
       "eventType": eventType,
       "eventTimestamp": eventTimestamp.millisecondsSinceEpoch,
       "eventStatus": Constants.EVENT_STATUS_NONE,

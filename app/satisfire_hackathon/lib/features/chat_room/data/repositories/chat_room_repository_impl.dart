@@ -15,7 +15,7 @@ class ChatRoomRepositoryImpl extends ChatRoomRepository {
   @override
   Future<Either<Failure, bool>> respondToEvent(
       String chatID, String messageID, bool isAccept) async {
-    if (await networkInfo.isConnected != null) {
+    if (networkInfo.isConnected != null) {
       try {
         await FirebaseInit.dbRef
             .child("chats/messages/$chatID/$messageID/eventStatus")
@@ -36,13 +36,9 @@ class ChatRoomRepositoryImpl extends ChatRoomRepository {
   @override
   Future<Either<Failure, bool>> sendMessage(
       String chatID, Message message) async {
-    if (await networkInfo.isConnected != null) {
+    if (networkInfo.isConnected != null) {
       try {
-        await FirebaseInit.dbRef
-            .child("chats/rooms/$chatID/recentMessage")
-            .set(message.toJson(isRecentMessage: true));
-
-        await FirebaseInit.dbRef.child("chats/rooms/$chatID").push().set(
+        await FirebaseInit.dbRef.child("chats/messages/$chatID").push().set(
             message.type == Constants.MESSAGE_TYPE_EVENT
                 ? (message as EventMessage).toJson()
                 : message.toJson());

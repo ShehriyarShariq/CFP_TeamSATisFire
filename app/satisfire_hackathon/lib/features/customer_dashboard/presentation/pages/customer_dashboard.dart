@@ -415,40 +415,40 @@ class _CustomerDashboardState extends State<CustomerDashboard> {
                                 );
                               },
                             )),
-                        if (!FirebaseInit.auth.currentUser.isAnonymous) ...[
-                          SizedBox(
-                            height: 25,
-                          ),
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  "Upcoming Bookings",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                                Text(
-                                  "View All",
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Color(0xFFAF42AE),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          ListView.builder(
-                            physics: NeverScrollableScrollPhysics(),
-                            itemCount: 1,
-                            shrinkWrap: true,
-                            itemBuilder: (context, index) =>
-                                UpComingBookingWidget(),
-                          ),
-                        ],
+                        // if (!FirebaseInit.auth.currentUser.isAnonymous) ...[
+                        //   SizedBox(
+                        //     height: 25,
+                        //   ),
+                        //   Align(
+                        //     alignment: Alignment.centerLeft,
+                        //     child: Row(
+                        //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        //       children: [
+                        //         Text(
+                        //           "Upcoming Bookings",
+                        //           style: TextStyle(
+                        //             fontSize: 16,
+                        //             fontWeight: FontWeight.w500,
+                        //           ),
+                        //         ),
+                        //         Text(
+                        //           "View All",
+                        //           style: TextStyle(
+                        //             fontSize: 14,
+                        //             color: Color(0xFFAF42AE),
+                        //           ),
+                        //         ),
+                        //       ],
+                        //     ),
+                        //   ),
+                        //   ListView.builder(
+                        //     physics: NeverScrollableScrollPhysics(),
+                        //     itemCount: 1,
+                        //     shrinkWrap: true,
+                        //     itemBuilder: (context, index) =>
+                        //         UpComingBookingWidget(),
+                        //   ),
+                        // ],
                         SizedBox(
                           height: 25,
                         ),

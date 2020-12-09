@@ -36,13 +36,8 @@ class _ServiceImagesPagerWidgetState extends State<ServiceImagesPagerWidget> {
                 (image) => FittedBox(
                   fit: BoxFit.cover,
                   child: FadeInImage(
-                      imageErrorBuilder: (context, exception, stackTrace) {
-                        return Container(
-                          child: Image.asset('img/dummy_item.png'),
-                        );
-                      },
                       image: NetworkImage(image),
-                      placeholder: AssetImage('img/dummy_item.png'),
+                      placeholder: AssetImage('img/service.png'),
                       fit: BoxFit.cover),
                 ),
               )

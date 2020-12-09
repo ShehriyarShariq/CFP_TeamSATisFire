@@ -13,7 +13,7 @@ class CategoryServicesRepositoryImpl extends CategoryServicesRepository {
   @override
   Future<Either<Failure, List<Service>>> getAllCategoryServices(
       String categoryID) async {
-    if (await networkInfo.isConnected != null) {
+    if (networkInfo.isConnected != null) {
       try {
         List<Service> categoryServices = [];
 

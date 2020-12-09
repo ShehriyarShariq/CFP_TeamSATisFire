@@ -17,7 +17,7 @@ class CreateEditServiceRepositoryImpl extends CreateEditServiceRepository {
   @override
   Future<Either<Failure, bool>> saveService(
       Service service, List<File> images) async {
-    if (await networkInfo.isConnected != null) {
+    if (networkInfo.isConnected != null) {
       try {
         String serviceID = FirebaseInit.auth.currentUser.uid +
             "_" +

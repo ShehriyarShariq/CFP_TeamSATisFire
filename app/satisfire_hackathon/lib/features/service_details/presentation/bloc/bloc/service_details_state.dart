@@ -17,4 +17,12 @@ class LoadedReviews extends ServiceDetailsState {
   LoadedReviews({this.reviews}) : super([reviews]);
 }
 
+class MakingChatRoom extends ServiceDetailsState {}
+
+class ChatRoomEstablished extends ServiceDetailsState {
+  final String chatID;
+
+  ChatRoomEstablished({this.chatID}) : super([chatID]);
+}
+
 class Error extends ServiceDetailsState {}
